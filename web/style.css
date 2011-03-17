@@ -1,0 +1,25 @@
+button
+{
+  -webkit-border-radius: 10px;
+}
+
+.num
+{
+  background-color: purple;
+}
+
+.emo
+{
+  background-color: blue;
+}
+
+.symptom
+{
+  background-color: green;
+}
+
+td div
+{
+  width: 100px;
+  height: 100px;
+}

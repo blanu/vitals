@@ -11,20 +11,44 @@ var set=function(tag, value)
 
   if(value!==undefined && value!=null)
   {
-    db.addDoc(timestamp(), {'tag': tag});
+    db.addDoc(timestamp(), {'tag': tag, 'value': value});
   }
   else
   {
-    db.addDoc(timestamp(), {'tag': tag, 'value': value});
+    db.addDoc(timestamp(), {'tag': tag});
   }
 }
 
 var setWeight=function()
 {
+  $('#weightDialog').dialog({
+    buttons: {
+      'Save': function() {
+        console.log('weight: '+$('#weightField').val());
+        set('weight', parseFloat($('#weightField').val()));
+        $(this).dialog('close');
+      },
+      'Cancel': function() {
+        $(this).dialog('close');
+      }
+    }
+  });
 }
 
 var setSleep=function()
 {
+  $('#sleepDialog').dialog({
+    buttons: {
+      'Save': function() {
+        console.log('sleep: '+$('#sleepField').val());
+        set('sleep', parseFloat($('#sleepField').val()));
+        $(this).dialog('close');
+      },
+      'Cancel': function() {
+        $(this).dialog('close');
+      }
+    }
+  });
 }
 
 var setTired=function()

@@ -40,37 +40,57 @@ var now=function()
 
 var draw=function(tag)
 {
-  var table;
-  var visualization;
-  var rows;
   var x;
-  var timestamp;
   var value;
   var s;
   var a;
   var start=now();
   var index;
-  var buckets=[];
+  var scale;
 
-  log('draw '+tag);
-
-  log('data:');
-  log(data);
+  log('start: '+start);
 
   s='https://chart.googleapis.com/chart?cht=ls&chs=200x200&chtt='+tag;
+
+  if(tag=='weight')
+  {
+    s=s+'&chm=h,FF0000,0,'+(165/250)+',1';
+  }
+  else if(tag=='sleep')
+  {
+    s=s+'&chm=h,FF0000,0,0.8,1';
+  }
+
   s=s+'&chd=t:'
   a='';
 
+  log(tag);
+  log(data[tag]);
+
   for(x=0; x<10; x++)
   {
-    index=start-(10-x);
+    index=start-(9-x);
+    log('index: '+index);
     if(data[tag]===undefined || data[tag][index]===undefined)
     {
       a=a+0+',';
     }
     else
     {
-      a=a+(data[tag][index]*20)+',';
+      if(tag=='weight')
+      {
+        scale=100/250;
+      }
+      else if(tag=='sleep')
+      {
+        scale=100/10;
+      }
+      else
+      {
+        scale=100/5;
+      }
+
+      a=a+Math.round(data[tag][index]*scale)+',';
     }
   }
 
@@ -83,6 +103,8 @@ var draw=function(tag)
 
 var drawGraphs=function()
 {
+  draw('weight');
+  draw('sleep');
   draw('tired');
   draw('energetic');
   draw('depressed');

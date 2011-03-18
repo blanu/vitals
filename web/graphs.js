@@ -28,29 +28,14 @@ var drawSleep=function()
 {
 }
 
-var drawTired=function()
+var bucket=function(timestamp)
 {
-  set('tired');
+  return Math.floor(timestamp/(86400*1000));
 }
 
-var drawEnergetic=function()
+var now=function()
 {
-  set('energetic');
-}
-
-var drawDepressed=function()
-{
-  set('depressed');
-}
-
-var drawHappy=function()
-{
-  set('happy');
-}
-
-var drawPain=function()
-{
-  set('pain');
+  return bucket(new Date().getTime());
 }
 
 var draw=function(tag)
@@ -61,48 +46,56 @@ var draw=function(tag)
   var x;
   var timestamp;
   var value;
+  var s;
+  var a;
+  var start=now();
+  var index;
+  var buckets=[];
 
   log('draw '+tag);
-  log(google);
-  log(google.visualization);
-  log(google.visualization.DataTable);
-  table = new google.visualization.DataTable();
-  data.addColumn('data', 'Date');
-  data.addColumn('number', tag);
 
-  rows=[];
-  for(x=0; x<data[tag].length; x++)
+  log('data:');
+  log(data);
+
+  s='https://chart.googleapis.com/chart?cht=ls&chs=200x200&chtt='+tag;
+  s=s+'&chd=t:'
+  a='';
+
+  for(x=0; x<10; x++)
   {
-    timestamp=data[tag][x].timestamp;
-    if(data[tag][x].value===undefined)
+    index=start-(10-x);
+    if(data[tag]===undefined || data[tag][index]===undefined)
     {
-      value=1;
+      a=a+0+',';
     }
     else
     {
-      value=data[tag][x].value
+      a=a+(data[tag][index]*20)+',';
     }
-    rows.push([timestamp, value]);
   }
 
-  log('rows:');
-  log(rows);
+  a=a.substring(0,a.length-1);
 
-  data.addRows(rows);
+  s=s+a;
 
-  visualization = new google.visualization.AnnotatedTimeLine($('#fatigue'));
-  chart.draw(table, {displayAnnotations: true});
+  $('#'+tag).attr('src', s);
 }
 
 var drawGraphs=function()
 {
+  draw('tired');
+  draw('energetic');
+  draw('depressed');
   draw('happy');
+  draw('pain');
+  draw('fatigue');
 }
 
 var process=function(results)
 {
   var key;
   var value;
+  var buck;
 
   for(key in results)
   {
@@ -110,14 +103,35 @@ var process=function(results)
     {
       value=results[key];
       value.timestamp=key;
+      buck=bucket(parseInt(key)).toString();
+
+      if(value.value===undefined)
+      {
+        value.value=1;
+      }
 
       if(value.tag in data)
       {
-        data[value.tag].push(value);
+        if(buck in data[value.tag])
+        {
+          if(value.tag=='weight')
+          {
+            data[value.tag][buck]=Math.round((data[value.tag][buck]+value.value)/2);
+          }
+          else
+          {
+            data[value.tag][buck]=data[value.tag][buck]+value.value;
+          }
+        }
+        else
+        {
+          data[value.tag][buck]=value.value;
+        }
       }
       else
       {
-        data[value.tag]=[value];
+        data[value.tag]={};
+        data[value.tag][buck]=value.value;
       }
     }
   }
@@ -145,10 +159,6 @@ var fetchData=function()
 var initGraphs=function()
 {
   log('initGraphs');
-  google.load('visualization', '1', {'packages':['corechart']});
-  google.load("visualization", "1", {'packages': ['annotatedtimeline']});
-//  google.setOnLoadCallback(fetchData);
-
   fetchData();
 }
 

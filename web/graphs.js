@@ -70,7 +70,6 @@ var draw=function(tag)
   for(x=0; x<10; x++)
   {
     index=start-(9-x);
-    log('index: '+index);
     if(data[tag]===undefined || data[tag][index]===undefined)
     {
       a=a+0+',';

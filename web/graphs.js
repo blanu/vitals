@@ -79,6 +79,7 @@ var draw=function(tag)
   var scale;
   var result;
   var result2;
+  var datapoint;
 
   log('start: '+start);
 
@@ -102,88 +103,99 @@ var draw=function(tag)
   for(x=0; x<10; x++)
   {
     index=start-(9-x);
+
+    if(tag=='weight')
+    {
+      scale=100/250;
+    }
+    else if(tag=='sleep')
+    {
+      scale=100/10;
+    }
+    else
+    {
+      scale=100/5;
+    }
+
     if(data[tag]===undefined) // No data
     {
-      a=a+0+',';
+      log('no data');
+      datapoint=0;
     }
     else if(data[tag][index]===undefined) // Missing data point
     {
+      log('missing data point');
       if(tag=='weight' || tag=='sleep') // Zeros makes the graphs look weird
       {
+        log('interpolate');
         if(x==0)
         {
+          log('first data point');
           result=find(data[tag], index, true);
 
           if(result===null)
           {
-            a=a+0+',';
+            datapoint=0;
           }
           else
           {
-            a=a+result+',';
+            datapoint=result;
           }
         }
         else if(x==9)
         {
+          log('last data point');
           result=find(data[tag], index, false);
 
           if(result===null)
           {
-            a=a+0+',';
+            datapoint=0;
           }
           else
           {
-            a=a+result+',';
+            datapoint=result;
           }
         }
         else
         {
+          log('middle data point');
           result=find(data[tag], index, true);
           result2=find(data[tag], index, false);
 
           if(result===null && result2===null)
           {
-            a=a+0+',';
+            datapoint=0;
           }
           else
           {
             if(result===null)
             {
-              a=a+result2+',';
+              datapoint=result2;
             }
             else if(result2===null)
             {
-              a=a+result+',';
+              datapoint=result;
             }
             else
             {
-              a=a+((result+result2)/2)+',';
+              datapoint=(result+result2)/2;
             }
           }
         }
       }
       else // No data means zero
       {
-        a=a+0+',';
+        log('use zero');
+        datapoint=0;
       }
     }
-    else // Data point available
+    else
     {
-      if(tag=='weight')
-      {
-        scale=100/250;
-      }
-      else if(tag=='sleep')
-      {
-        scale=100/10;
-      }
-      else
-      {
-        scale=100/5;
-      }
-
-      a=a+Math.round(data[tag][index]*scale)+',';
+      log('datapint available');
+      datapoint=data[tag][index];
     }
+
+    a=a+(datapoint*scale)+',';
   }
 
   a=a.substring(0,a.length-1);

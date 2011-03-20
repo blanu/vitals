@@ -38,6 +38,36 @@ var now=function()
   return bucket(new Date().getTime());
 }
 
+var findValue=function(items, index, forward)
+{
+  var x;
+
+  if(forward)
+  {
+    for(x=index+1; x<items.length; x++)
+    {
+      if(items[x]!==undefined)
+      {
+        return items[x];
+      }
+    }
+
+    return null;
+  }
+  else
+  {
+    for(x=index-1; x>0; x--)
+    {
+      if(items[x]!==undefined)
+      {
+        return items[x];
+      }
+    }
+
+    return null;
+  }
+}
+
 var draw=function(tag)
 {
   var x;
@@ -47,6 +77,8 @@ var draw=function(tag)
   var start=now();
   var index;
   var scale;
+  var result;
+  var result2;
 
   log('start: '+start);
 
@@ -70,11 +102,72 @@ var draw=function(tag)
   for(x=0; x<10; x++)
   {
     index=start-(9-x);
-    if(data[tag]===undefined || data[tag][index]===undefined)
+    if(data[tag]===undefined) // No data
     {
       a=a+0+',';
     }
-    else
+    else if(data[tag][index]===undefined) // Missing data point
+    {
+      if(tag=='weight' || tag=='sleep') // Zeros makes the graphs look weird
+      {
+        if(x==0)
+        {
+          result=find(data[tag], index, true);
+
+          if(result===null)
+          {
+            a=a+0+',';
+          }
+          else
+          {
+            a=a+result+',';
+          }
+        }
+        else if(x==9)
+        {
+          result=find(data[tag], index, false);
+
+          if(result===null)
+          {
+            a=a+0+',';
+          }
+          else
+          {
+            a=a+result+',';
+          }
+        }
+        else
+        {
+          result=find(data[tag], index, true);
+          result2=find(data[tag], index, false);
+
+          if(result===null && result2===null)
+          {
+            a=a+0+',';
+          }
+          else
+          {
+            if(result===null)
+            {
+              a=a+result2+',';
+            }
+            else if(result2===null)
+            {
+              a=a+result+',';
+            }
+            else
+            {
+              a=a+((result+result2)/2)+',';
+            }
+          }
+        }
+      }
+      else // No data means zero
+      {
+        a=a+0+',';
+      }
+    }
+    else // Data point available
     {
       if(tag=='weight')
       {

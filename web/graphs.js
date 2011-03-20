@@ -38,7 +38,7 @@ var now=function()
   return bucket(new Date().getTime());
 }
 
-var findValue=function(items, index, forward)
+var find=function(items, index, forward)
 {
   var x;
 

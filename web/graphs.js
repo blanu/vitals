@@ -135,7 +135,7 @@ var process=function(results)
       {
         if(buck in data[value.tag])
         {
-          if(value.tag=='weight')
+          if(value.tag=='weight' || value.tag=='sleep')
           {
             data[value.tag][buck]=Math.round((data[value.tag][buck]+value.value)/2);
           }

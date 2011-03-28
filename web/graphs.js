@@ -142,13 +142,13 @@ var cleanData=function(tag, d)
             }
           }
         }
+
+        continue;
       }
       else // No data means zero
       {
         datapoint=0;
       }
-
-      continue;
     }
     else
     {

@@ -7,41 +7,45 @@
     <table>
       <tr class="num">
         <td>
-          <img id="weight"></img>
+          <div id="weight" class="chart"></div>
         </td>
         <td>
-          <img id="sleep"></img>
-        </td>
-      </tr>
-      <tr class="emo">
-        <td>
-          <img id="tired"></img>
-        </td>
-        <td>
-          <img id="energetic"></img>
+          <div id="sleep" class="chart"></div>
         </td>
       </tr>
       <tr class="emo">
         <td>
-          <img id="depressed"></img>
+          <div id="tired" class="chart"></div>
         </td>
         <td>
-          <img id="happy"></img>
+          <div id="energetic" class="chart"></div>
+        </td>
+      </tr>
+      <tr class="emo">
+        <td>
+          <div id="depressed" class="chart"></div>
+        </td>
+        <td>
+          <div id="happy" class="chart"></div>
         </td>
       </tr>
       <tr class="symptom">
         <td>
-          <img id="pain"></img>
+          <div id="pain" class="chart"></div>
         </td>
         <td>
-          <img id="fatigue"></img>
+          <div id="fatigue" class="chart"></div>
         </td>
       </tr>
     </table>
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script src="http://flot.googlecode.com/svn/trunk/jquery.flot.js"></script>
+    <script src="http://flot.googlecode.com/svn/trunk/jquery.flot.crosshair.js"></script>
+    <script src="http://flot.googlecode.com/svn/trunk/jquery.flot.navigate.js"></script>
+
     <script src="http://beta.freefalldb.com/lib/debug.js"></script>
     <script src="http://beta.freefalldb.com/scripts/freefall.js"></script>
-    <script src="graphs.js"></script>
+    <script src="graphs-flot.js"></script>
   </body>
 </html>

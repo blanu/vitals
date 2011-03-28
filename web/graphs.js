@@ -68,70 +68,32 @@ var find=function(items, index, forward)
   }
 }
 
-var draw=function(tag)
+var cleanData=function(tag, d)
 {
   var x;
-  var value;
-  var s;
-  var a;
-  var start=now();
   var index;
-  var scale;
+  var datapoint;
   var result;
   var result2;
-  var datapoint;
-
-  log('start: '+start);
-
-  s='https://chart.googleapis.com/chart?cht=ls&chs=200x200&chtt='+tag;
-
-  if(tag=='weight')
-  {
-    s=s+'&chm=h,FF0000,0,'+(165/250)+',1';
-  }
-  else if(tag=='sleep')
-  {
-    s=s+'&chm=h,FF0000,0,0.8,1';
-  }
-
-  s=s+'&chd=t:'
-  a='';
-
-  log(tag);
-  log(data[tag]);
+  var points=[];
+  var start=now();
 
   for(x=0; x<10; x++)
   {
     index=start-(9-x);
 
-    if(tag=='weight')
-    {
-      scale=100/250;
-    }
-    else if(tag=='sleep')
-    {
-      scale=100/10;
-    }
-    else
-    {
-      scale=100/5;
-    }
-
-    if(data[tag]===undefined) // No data
+    if(d===undefined) // No data
     {
       log('no data');
       datapoint=0;
     }
-    else if(data[tag][index]===undefined) // Missing data point
+    else if(d[index]===undefined) // Missing data point
     {
-      log('missing data point');
       if(tag=='weight' || tag=='sleep') // Zeros makes the graphs look weird
       {
-        log('interpolate');
         if(x==0)
         {
-          log('first data point');
-          result=find(data[tag], index, true);
+          result=find(d, index, true);
 
           if(result===null)
           {
@@ -144,8 +106,7 @@ var draw=function(tag)
         }
         else if(x==9)
         {
-          log('last data point');
-          result=find(data[tag], index, false);
+          result=find(d, index, false);
 
           if(result===null)
           {
@@ -158,9 +119,8 @@ var draw=function(tag)
         }
         else
         {
-          log('middle data point');
-          result=find(data[tag], index, true);
-          result2=find(data[tag], index, false);
+          result=find(d, index, true);
+          result2=find(d, index, false);
 
           if(result===null && result2===null)
           {
@@ -185,24 +145,80 @@ var draw=function(tag)
       }
       else // No data means zero
       {
-        log('use zero');
         datapoint=0;
       }
     }
     else
     {
-      log('datapint available');
-      datapoint=data[tag][index];
+      datapoint=d[index];
     }
 
-    a=a+(datapoint*scale)+',';
+    points.push([x, datapoint]);
   }
 
-  a=a.substring(0,a.length-1);
+  return points;
+}
 
-  s=s+a;
+var baseline=function(tag)
+{
+  var points=[];
+  var base;
+  var x;
 
-  $('#'+tag).attr('src', s);
+  if(tag=='weight')
+  {
+    base=165;
+  }
+  else if(tag=='sleep')
+  {
+    base=8;
+  }
+
+  for(x=0; x<10; x++)
+  {
+    points.push([x, base]);
+  }
+
+  return points;
+}
+
+var draw=function(tag)
+{
+  var elem;
+  var points;
+  var options;
+
+  elem=$('#'+tag);
+
+  points=cleanData(tag, data[tag]);
+  log('points:');
+  log(points);
+
+  options={
+    xaxis: {min: 0, max: 10},
+  };
+
+  if(tag=='weight')
+  {
+    options.yaxis={min: 0, max: 250};
+  }
+  else if(tag=='sleep')
+  {
+    options.yaxis={min: 0, max: 10};
+  }
+  else
+  {
+    options.yaxis={min: 0, max: 5};
+  }
+
+  if(tag=='weight' || tag=='sleep')
+  {
+    $.plot(elem, [points, baseline(tag)], options);
+  }
+  else
+  {
+    $.plot(elem, [points], options);
+  }
 }
 
 var drawGraphs=function()

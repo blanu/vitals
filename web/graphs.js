@@ -147,6 +147,8 @@ var cleanData=function(tag, d)
       {
         datapoint=0;
       }
+
+      continue;
     }
     else
     {

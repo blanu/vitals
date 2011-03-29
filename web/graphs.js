@@ -197,7 +197,7 @@ var draw=function(tag)
   log(points);
 
   options={
-    xaxis: {min: 0, max: 10},
+    xaxis: {min: 0, max: 9},
   };
 
   if(tag=='weight')

@@ -202,7 +202,7 @@ var draw=function(tag)
 
   if(tag=='weight')
   {
-    options.yaxis={min: 0, max: 250};
+    options.yaxis={min: 100, max: 250};
   }
   else if(tag=='sleep')
   {
